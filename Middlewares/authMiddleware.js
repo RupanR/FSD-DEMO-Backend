@@ -5,8 +5,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const authMiddleware = async (req, res, next) => {
-  const token = req.header("Authorization");
-  //const token = req.headers.authorization?.split(' ')[1] // split('')[1] =>bearer token
+  //const token = req.header("Authorization");
+  const token = req.headers.authorization?.split(" ")[1]; // split('')[1] =>bearer token
 
   if (!token) {
     return res.status(404).json({ message: "Token Missing" });
