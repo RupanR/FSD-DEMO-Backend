@@ -11,8 +11,9 @@ export const placeOrder = async (req, res) => {
     );
 
     if (!cart || cart.items.length === 0) {
-      return res.status(404).json({ message: "Your cart is empty" });
+      return res.status(400).json({ message: "Your cart is empty" });
     }
+
     const totalPrice = cart.items.reduce(
       (acc, item) => acc + item.product.price * item.quantity,
       0
@@ -24,22 +25,25 @@ export const placeOrder = async (req, res) => {
       totalPrice,
       status: "Pending",
     });
+
     await order.save();
+
     if (cart) {
       await Cart.findOneAndDelete({ user: req.user._id });
     }
 
     try {
-      const userMail = req.user.email;
+      const userEmail = req.user.email;
       await sendEmail(
-        userMail,
+        userEmail,
         "Order Confirmation",
-        `Your order is placed at the total price of ${totalPrice}.
-           If the order is not placed by you kindly revert back to us.`
+        `Your order of $${totalPrice} is confirmed!`
       );
-    } catch (error) {
-      console.log("Email Sending Failed", error.message);
+    } catch (emailError) {
+      console.log("Email sending failed:", emailError.message);
     }
+
+    res.status(200).json({ message: "Order Placed Successfully", order });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
