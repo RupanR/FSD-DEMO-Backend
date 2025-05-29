@@ -5,7 +5,8 @@ import {
   getAllProducts,
   updateProduct,
 } from "../Controllers/productController.js";
-import { adminMiddleware } from "../Middlewares/AdminMiddleware.js";
+
+import { adminMiddleware } from "../Middleware/adminMiddleware.js";
 
 const router = express.Router();
 
